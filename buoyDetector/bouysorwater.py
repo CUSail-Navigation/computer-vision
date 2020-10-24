@@ -3,6 +3,7 @@ import numpy
 import math
 from enum import Enum
 
+
 class BuoyDetector:
 
     def __init__(self):
@@ -60,35 +61,39 @@ class BuoyDetector:
 
         self.filter_contours_output = None
 
-
     def process(self, source0):
         """
         Runs the pipeline and sets all outputs to new values.
         """
         # Step RGB_Threshold0:
         self.__rgb_threshold_input = source0
-        (self.rgb_threshold_output) = self.__rgb_threshold(self.__rgb_threshold_input, self.__rgb_threshold_red, self.__rgb_threshold_green, self.__rgb_threshold_blue)
+        (self.rgb_threshold_output) = self.__rgb_threshold(self.__rgb_threshold_input,
+                                                           self.__rgb_threshold_red, self.__rgb_threshold_green, self.__rgb_threshold_blue)
 
         # Step CV_erode0:
         self.__cv_erode_src = self.rgb_threshold_output
-        (self.cv_erode_output) = self.__cv_erode(self.__cv_erode_src, self.__cv_erode_kernel, self.__cv_erode_anchor, self.__cv_erode_iterations, self.__cv_erode_bordertype, self.__cv_erode_bordervalue)
+        (self.cv_erode_output) = self.__cv_erode(self.__cv_erode_src, self.__cv_erode_kernel,
+                                                 self.__cv_erode_anchor, self.__cv_erode_iterations, self.__cv_erode_bordertype, self.__cv_erode_bordervalue)
 
         # Step Blur0:
         self.__blur_input = self.cv_erode_output
-        (self.blur_output) = self.__blur(self.__blur_input, self.__blur_type, self.__blur_radius)
+        (self.blur_output) = self.__blur(
+            self.__blur_input, self.__blur_type, self.__blur_radius)
 
         # Step CV_dilate0:
         self.__cv_dilate_src = self.blur_output
-        (self.cv_dilate_output) = self.__cv_dilate(self.__cv_dilate_src, self.__cv_dilate_kernel, self.__cv_dilate_anchor, self.__cv_dilate_iterations, self.__cv_dilate_bordertype, self.__cv_dilate_bordervalue)
+        (self.cv_dilate_output) = self.__cv_dilate(self.__cv_dilate_src, self.__cv_dilate_kernel,
+                                                   self.__cv_dilate_anchor, self.__cv_dilate_iterations, self.__cv_dilate_bordertype, self.__cv_dilate_bordervalue)
 
         # Step Find_Contours0:
         self.__find_contours_input = self.cv_dilate_output
-        (self.find_contours_output) = self.__find_contours(self.__find_contours_input, self.__find_contours_external_only)
+        (self.find_contours_output) = self.__find_contours(
+            self.__find_contours_input, self.__find_contours_external_only)
 
         # Step Filter_Contours0:
         self.__filter_contours_contours = self.find_contours_output
-        (self.filter_contours_output) = self.__filter_contours(self.__filter_contours_contours, self.__filter_contours_min_area, self.__filter_contours_min_perimeter, self.__filter_contours_min_width, self.__filter_contours_max_width, self.__filter_contours_min_height, self.__filter_contours_max_height, self.__filter_contours_solidity, self.__filter_contours_max_vertices, self.__filter_contours_min_vertices, self.__filter_contours_min_ratio, self.__filter_contours_max_ratio)
-
+        (self.filter_contours_output) = self.__filter_contours(self.__filter_contours_contours, self.__filter_contours_min_area, self.__filter_contours_min_perimeter, self.__filter_contours_min_width, self.__filter_contours_max_width,
+                                                               self.__filter_contours_min_height, self.__filter_contours_max_height, self.__filter_contours_solidity, self.__filter_contours_max_vertices, self.__filter_contours_min_vertices, self.__filter_contours_min_ratio, self.__filter_contours_max_ratio)
 
     @staticmethod
     def __rgb_threshold(input, red, green, blue):
@@ -116,8 +121,8 @@ class BuoyDetector:
         Returns:
             A numpy.ndarray after erosion.
         """
-        return cv2.erode(src, kernel, anchor, iterations = (int) (iterations +0.5),
-                            borderType = border_type, borderValue = border_value)
+        return cv2.erode(src, kernel, anchor, iterations=(int)(iterations + 0.5),
+                         borderType=border_type, borderValue=border_value)
 
     @staticmethod
     def __blur(src, type, radius):
@@ -153,8 +158,8 @@ class BuoyDetector:
         Returns:
             A numpy.ndarray after dilation.
         """
-        return cv2.dilate(src, kernel, anchor, iterations = (int) (iterations +0.5),
-                            borderType = border_type, borderValue = border_value)
+        return cv2.dilate(src, kernel, anchor, iterations=(int)(iterations + 0.5),
+                          borderType=border_type, borderValue=border_value)
 
     @staticmethod
     def __find_contours(input, external_only):
@@ -170,13 +175,13 @@ class BuoyDetector:
         else:
             mode = cv2.RETR_LIST
         method = cv2.CHAIN_APPROX_SIMPLE
-        im2, contours, hierarchy =cv2.findContours(input, mode=mode, method=method)
+        contours, hierarchy = cv2.findContours(input, mode=mode, method=method)
         return contours
 
     @staticmethod
     def __filter_contours(input_contours, min_area, min_perimeter, min_width, max_width,
-                        min_height, max_height, solidity, max_vertex_count, min_vertex_count,
-                        min_ratio, max_ratio):
+                          min_height, max_height, solidity, max_vertex_count, min_vertex_count,
+                          min_ratio, max_ratio):
         """Filters out contours that do not meet certain criteria.
         Args:
             input_contours: Contours as a list of numpy.ndarray.
@@ -196,7 +201,7 @@ class BuoyDetector:
         """
         output = []
         for contour in input_contours:
-            x,y,w,h = cv2.boundingRect(contour)
+            x, y, w, h = cv2.boundingRect(contour)
             if (w < min_width or w > max_width):
                 continue
             if (h < min_height or h > max_height):
@@ -219,4 +224,5 @@ class BuoyDetector:
         return output
 
 
-BlurType = Enum('BlurType', 'Box_Blur Gaussian_Blur Median_Filter Bilateral_Filter')
+BlurType = Enum(
+    'BlurType', 'Box_Blur Gaussian_Blur Median_Filter Bilateral_Filter')

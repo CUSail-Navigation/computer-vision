@@ -20,8 +20,8 @@ def find_distances(bd, scale):
     for contour in bd.filter_contours_output:
         center, size, angle = cv2.minAreaRect(contour)
         width, height = size
-        distances.append(obstacle_size * focal_length /
-                         (max(width, height) * mm_per_pixel))
+        distances.append((obstacle_size * focal_length /
+                          (max(width, height) * mm_per_pixel)) / 1000)
 
     return distances
 

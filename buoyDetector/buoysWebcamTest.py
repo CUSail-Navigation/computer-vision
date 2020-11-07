@@ -27,10 +27,9 @@ def find_distances(bd, scale):
 
 
 camera = PiCamera()
-camera.resolution = (640, 480)
+camera.resolution = (3280, 2464)
 camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(640, 480))
-vid = cv2.VideoCapture(0)
+rawCapture = PiRGBArray(camera, size=(3280, 2464))
 
 time.sleep(0.1)
 
@@ -39,6 +38,7 @@ print("Press q to quit.")
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
     rawCapture.truncate()
+    rawCapture.seek(0)
     frame = frame.array
     # scale image
     max_dimension = max(frame.shape)

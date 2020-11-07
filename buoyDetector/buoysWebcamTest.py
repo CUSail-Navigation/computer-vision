@@ -38,6 +38,7 @@ print("Press q to quit.")
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
+    rawCapture.truncate()
     frame = frame.array
     # scale image
     max_dimension = max(frame.shape)

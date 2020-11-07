@@ -38,6 +38,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     frame = frame.array
     # scale image
+    '''
     max_dimension = max(frame.shape)
     scale = 700 / max_dimension
     frame = cv2.resize(frame, None, fx=scale, fy=scale)
@@ -53,6 +54,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     cv2.drawContours(frame, contours, -1, (0, 255, 0), 3)
 
     cv2.imshow('buoy detection', frame)
+    '''
+    cv2.imshow("Frame", frame)
 
     rawCapture.truncate(0)
 

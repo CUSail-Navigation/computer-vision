@@ -13,7 +13,7 @@ def find_distances(bd, scale):
     """
     focal_length = 3.60  # focal length of raspberry pi camera 2
     obstacle_size = 1016  # size of a buoy in mm
-    mm_per_pixel = 1/600  # also based on camera, need to figure this out
+    mm_per_pixel = 3.75/2592  # also based on raspberry pi camera 2
 
     distances = []
 
@@ -38,7 +38,6 @@ print("Press q to quit.")
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
     frame = frame.array
-    # scale image
 
     max_dimension = max(frame.shape)
     scale = 700 / max_dimension
@@ -50,7 +49,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     contours = bd.filter_contours_output
     found = contours != None
 
-    #print(find_distances(bd, scale))
+    print(find_distances(bd, scale))
 
     cv2.drawContours(frame, contours, -1, (0, 255, 0), 3)
 

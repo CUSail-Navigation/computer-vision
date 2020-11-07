@@ -36,8 +36,6 @@ print("Press q to quit.")
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
-    rawCapture.truncate(0)
-    rawCapture.seek(0)
     frame = frame.array
     # scale image
     max_dimension = max(frame.shape)
@@ -55,6 +53,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     cv2.drawContours(frame, contours, -1, (0, 255, 0), 3)
 
     cv2.imshow('buoy detection', frame)
+
+    rawCapture.truncate(0)
 
     # press q to quit
     if cv2.waitKey(1) & 0xFF == ord('q'):

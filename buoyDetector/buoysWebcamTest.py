@@ -27,8 +27,9 @@ def find_distances(bd, scale):
 
 
 camera = PiCamera()
-camera.resolution = (3280, 2464)
-rawCapture = PiRGBArray(camera, size=(3280, 2464))
+camera.resolution = (640, 480)
+camera.framerate = 32
+rawCapture = PiRGBArray(camera, size=(640, 480))
 
 time.sleep(0.1)
 

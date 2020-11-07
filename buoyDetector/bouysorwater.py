@@ -8,12 +8,12 @@ class BuoyDetector:
 
     def __init__(self):
         """
-        initializes all values to presets or None if need to be set
+        Initializes all values to presets or None if need to be set
         """
 
         self.__rgb_threshold_red = [0.0, 255.0]
-        self.__rgb_threshold_green = [31.214689265536727, 65.22727272727275]
-        self.__rgb_threshold_blue = [26.41242937853108, 75.45454545454542]
+        self.__rgb_threshold_green = [31, 65]
+        self.__rgb_threshold_blue = [26, 75]
 
         self.rgb_threshold_output = None
 
@@ -28,7 +28,7 @@ class BuoyDetector:
 
         self.__blur_input = self.cv_erode_output
         self.__blur_type = BlurType.Box_Blur
-        self.__blur_radius = 20.754716981132077
+        self.__blur_radius = 21
 
         self.blur_output = None
 

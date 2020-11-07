@@ -32,13 +32,13 @@ camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(640, 480))
 vid = cv2.VideoCapture(0)
 
+time.sleep(0.1)
+
 print("Press q to quit.")
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
-    frame = np.fromstring(rawCapture.getvalue(), dtype=np.uint8)
-    rawCapture.seek(0)
-    frame = cv2.imdecode(frame, 1)
+    frame = frame.array
     # scale image
     max_dimension = max(frame.shape)
     scale = 700 / max_dimension

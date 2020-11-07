@@ -2,6 +2,8 @@ from bouysorwater import BuoyDetector
 import cv2
 import numpy as np
 import time
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 
 def find_distances(bd, scale):
@@ -9,7 +11,7 @@ def find_distances(bd, scale):
     Return:
         A list where each one represents an obstacle distance.
     """
-    focal_length = 40  # for webcam? Need to change for sailboat's camera when we find that
+    focal_length = 3.60  # focal length of raspberry pi camera 2
     obstacle_size = 1016  # size of a buoy in mm
     mm_per_pixel = 1/600  # also based on camera, need to figure this out
 
@@ -24,12 +26,15 @@ def find_distances(bd, scale):
     return distances
 
 
+camera = PiCamera()
+camera.resolution = (640, 480)
+camera.framerate = 32
+rawCapture = PiRGBArray(camera, size=(640, 480))
 vid = cv2.VideoCapture(0)
 
 print("Press q to quit.")
 
-while (True):
-    _, frame = vid.read()  # get a frame from the webcam
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
     # scale image
     max_dimension = max(frame.shape)
@@ -42,7 +47,7 @@ while (True):
     contours = bd.filter_contours_output
     found = contours != None
 
-    print(find_distances(bd, scale))
+    #print(find_distances(bd, scale))
 
     cv2.drawContours(frame, contours, -1, (0, 255, 0), 3)
 

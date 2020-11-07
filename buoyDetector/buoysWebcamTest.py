@@ -36,7 +36,7 @@ print("Press q to quit.")
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
-    rawCapture.truncate()
+    rawCapture.truncate(0)
     rawCapture.seek(0)
     frame = frame.array
     # scale image

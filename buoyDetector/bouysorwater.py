@@ -179,7 +179,7 @@ class BuoyDetector:
         else:
             mode = cv2.RETR_LIST
         method = cv2.CHAIN_APPROX_SIMPLE
-        _, contours, hierarchy = cv2.findContours(
+        contours, hierarchy = cv2.findContours(
             input, mode=mode, method=method)
         return contours
 
@@ -227,6 +227,51 @@ class BuoyDetector:
                 continue
             output.append(contour)
         return output
+
+    """Calculates distances from each contour and creates list of obstacle distances from camera.
+    Return:
+        A list where each one represents an obstacle distance.
+    """
+
+    def find_distances(self):
+        focal_length = 3.60  # focal point of raspberry pi cam 1
+        obstacle_size = 1016  # size of a buoy in mm
+        mm_per_pixel = 3.75/2592  # also based on camera, should probably test this value
+
+        distances = []
+        x_displacements = []
+
+        for contour in self.filter_contours_output:
+            center, size, angle = cv2.minAreaRect(contour)
+            width, height = size
+            distances.append((obstacle_size * focal_length /
+                              (max(width, height) * mm_per_pixel)) / 1000)
+            print(center)
+            x_displacements.append(center)
+
+        return distances, x_displacements
+
+    '''
+    get_coord(distance, x_displacement, direction, curr_x, curr_y) returns the
+    x and y coordinates of a buoy given a calculated distance [distance] in front
+    of the boat facing [direction] (an angle w.r.t. )
+
+    Return:
+        A pair of coordinates x, y representing buoy location.
+    '''
+    def get_coord(distance, x_displacement, direction, curr_x, curr_y):
+
+        LAT_TO_METER = 111318  # constant
+        EARTH_RADIUS = 6371000.0
+        dist_lat = distance / LAT_TO_METER  # convert meters to latitude/longitude degrees
+        deg_to_rad = math.pi / 180.0
+        dist_coords = EARTH_RADIUS * deg_to_rad * dist_lat
+
+        buoy_x = curr_x + dist_coords * math.cos(direction)
+        buoy_y = curr_y + dist_coords * math.sin(direction)
+
+        # camera facing same direction as boat
+        return buoy_x, buoy_y  # returns one buoy's coordinates in our coordinate system
 
 
 BlurType = Enum(

@@ -23,3 +23,9 @@ while (True):
     print(bd.find_distances())
 
     cv2.drawContours(frame, contours, -1, (0, 255, 0), 3)
+
+    cv2.imshow('buoy detection', frame)
+
+    # press q to quit
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break

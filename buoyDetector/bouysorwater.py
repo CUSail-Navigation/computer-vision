@@ -229,14 +229,16 @@ class BuoyDetector:
         return output
 
     """Calculates distances from each contour and creates list of obstacle distances from camera.
+    Args:
+        img_height: height of image passed in, in pixels
     Return:
         A list where each one represents an obstacle distance.
     """
 
-    def find_distances(self):
+    def find_distances(self, img_height):
         focal_length = 3.60  # focal point of raspberry pi cam 1
         obstacle_size = 1016  # size of a buoy in mm
-        mm_per_pixel = 3.75/2592  # also based on camera, should probably test this value
+        sensor_height = 2.74
 
         distances = []
         x_displacements = []
@@ -244,8 +246,8 @@ class BuoyDetector:
         for contour in self.filter_contours_output:
             center, size, angle = cv2.minAreaRect(contour)
             width, height = size
-            distances.append((obstacle_size * focal_length /
-                              (max(width, height) * mm_per_pixel)) / 1000)
+            distances.append((obstacle_size * focal_length * img_height /
+                              (height * sensor_height)) / 1000)
             print(center)
             x_displacements.append(center)
 

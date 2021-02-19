@@ -2,6 +2,9 @@ import cv2
 import numpy
 import math
 from enum import Enum
+from detectors.utils import find_distances
+
+BUOY_HEIGHT = 1016  # buoy's height in mm
 
 
 class BuoyDetector:
@@ -235,45 +238,8 @@ class BuoyDetector:
         A list where each one represents an obstacle distance.
     """
 
-    def find_distances(self, img_height):
-        focal_length = 3.60  # focal point of raspberry pi cam 1
-        obstacle_size = 1016  # size of a buoy in mm
-        sensor_height = 2.74
-
-        distances = []
-        x_displacements = []
-
-        for contour in self.filter_contours_output:
-            center, size, angle = cv2.minAreaRect(contour)
-            width, height = size
-            distances.append((obstacle_size * focal_length * img_height /
-                              (height * sensor_height)) / 1000)
-            print(center)
-            x_displacements.append(center)
-
-        return distances, x_displacements
-
-    '''
-    get_coord(distance, x_displacement, direction, curr_x, curr_y) returns the
-    x and y coordinates of a buoy given a calculated distance [distance] in front
-    of the boat facing [direction] (an angle w.r.t. )
-
-    Return:
-        A pair of coordinates x, y representing buoy location.
-    '''
-    def get_coord(distance, x_displacement, direction, curr_x, curr_y):
-
-        LAT_TO_METER = 111318  # constant
-        EARTH_RADIUS = 6371000.0
-        dist_lat = distance / LAT_TO_METER  # convert meters to latitude/longitude degrees
-        deg_to_rad = math.pi / 180.0
-        dist_coords = EARTH_RADIUS * deg_to_rad * dist_lat
-
-        buoy_x = curr_x + dist_coords * math.cos(direction)
-        buoy_y = curr_y + dist_coords * math.sin(direction)
-
-        # camera facing same direction as boat
-        return buoy_x, buoy_y  # returns one buoy's coordinates in our coordinate system
+    def find_distances(self, img_height, img_width):
+        return find_distances(self.filter_contours_output, img_height, img_width, BUOY_HEIGHT)
 
 
 BlurType = Enum(

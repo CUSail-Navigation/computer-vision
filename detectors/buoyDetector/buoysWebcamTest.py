@@ -1,4 +1,5 @@
-from detectors.buoyDetector.buoyDetector import BuoyDetector
+# from detectors.buoyDetector.buoyDetector import buoyDetector
+from buoyDetector import *
 import cv2
 import numpy as np
 import time
@@ -6,7 +7,7 @@ import time
 vid = cv2.VideoCapture(0)
 
 print("Press q to quit.")
-while (True):
+while True:
     _, frame = vid.read()  # get a frame from the webcam
     # scale image
     max_dimension = max(frame.shape)
@@ -20,12 +21,12 @@ while (True):
     contours = bd.filter_contours_output
     found = contours != None
 
-    print(bd.find_distances(frame.shape[0], frame.shape[1]))
+    # print(bd.find_distances(frame.shape[0], frame.shape[1]))
 
     cv2.drawContours(frame, contours, -1, (0, 255, 0), 3)
 
-    cv2.imshow('buoy detection', frame)
+    cv2.imshow("buoy detection", frame)
 
     # press q to quit
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord("q"):
         break

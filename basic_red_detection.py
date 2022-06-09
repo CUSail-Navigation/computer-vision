@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-image_name = 'strawberry.jpg'
+image_name = 'red_buoy.jpeg'
 
 green = (0, 255, 0)
 
@@ -16,8 +16,8 @@ def overlay_mask(mask, image):
 
 def find_biggest_contour(image):
     #get the contours
-    image, contours, _ = cv2.findContours(image.copy(), cv2.RETR_LIST,
-                                          cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(image.copy(), cv2.RETR_LIST,
+                                   cv2.CHAIN_APPROX_SIMPLE)
 
     #isolating the largest contour
     contour_sizes = [(cv2.contourArea(contour), contour)
